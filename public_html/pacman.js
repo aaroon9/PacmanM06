@@ -39,20 +39,63 @@ var fantasma1 = new Array("x","y","direcc");
 var fantasma2 = new Array("x","y","direcc");
 var fantasma3 = new Array("x","y","direcc");
 
+function comprobarDir(ficha){
+    var x = ficha[0];
+    var y = ficha[1];
+    var cont = 0;
+    if(tablero[x-1][y] == 1){
+        cont++;
+    } 
+    if(tablero[x][y+1] == 1){
+        cont++;
+    }
+    if(tablero[x+1][y] == 1){
+        cont++;
+    }
+    if(tablero[x][y-1] == 1){
+        cont++;
+    }
+    if(cont >= 3){
+        dir = dirRandom(ficha);
+        ficha[2] = dir;
+    }
+    cont = 0;
+}
+
+
+
+
+
+function choque(fantasma1,fantasma2,fantasma3,jugador){
+    
+    if (fantasma1[0] == jugador[0] && fantasma1[1] == jugador[1]){
+        alert("choque");
+        clearInterval(m);
+    }
+    if(fantasma2[0] == jugador[0] && fantasma1[1] == jugador[1]){
+        alert("choque");
+        clearInterval(m);
+    }
+    if(fantasma3[0] == jugador[0] && fantasma3[1] == jugador[1]){
+        alert("choque");
+        clearInterval(m);
+    }
+}
+
 function posFantasma(fantasma){
     var pos = false;
     var direcc;
     
      while(pos != true){
-        var x = Math.floor((Math.random() * 30));
-        var y = Math.floor((Math.random() * 30));
+        var x = Math.floor((Math.random() * 31));
+        var y = Math.floor((Math.random() * 31));
         if(tablero[x][y] == 1){
             pos = true;
             fantasma[0] = x;
             fantasma[1] = y;
             direcc = dirRandom(fantasma);
             fantasma[2] = direcc;
-            //document.write("("+x+" "+y+" "+direcc+")");
+            document.write("(x: "+x+" y: "+y+" "+direcc+")");
             tablero[x][y] = 2;
         }else{
             pos = false;
@@ -65,14 +108,15 @@ function posJugador(jugador){
     var direcc;
     
     while(pos != true){
-        var x = Math.floor((Math.random() * 30));
-        var y = Math.floor((Math.random() * 30));
+        var x = Math.floor((Math.random() * 31));
+        var y = Math.floor((Math.random() * 31));
         if (tablero[x][y] != 0 && tablero[x][y] != 2){
             pos = true;
             jugador[0] = x;
             jugador[1] = y;
             direcc = dirRandom(jugador);
             jugador[2] = direcc;
+            document.write("(x: "+x+" y: "+y+" "+direcc+")");
             tablero[x][y] = 3;
         }else{
             pos = false;
@@ -82,43 +126,167 @@ function posJugador(jugador){
 
 function dirRandom(fantasma){
     var correct = false;
-    var direcc;
+    var direcc = 0;
     //Guardamos los parametros de X e Y Random que hemos selecionado en posFantasma;
     var x = fantasma[0];
     var y = fantasma[1];
+    //Comprovamos que la dureccion a la que se direige es correcta.
+    //alert("Elige dir.")
     while (correct != true){
-        direcc = Math.floor((Math.random() * 4)+1);
-        if (direcc == 1 && tablero[x-1][y] == 1){
+        direcc = Math.floor((Math.random() * 5) + 1);
+        //alert(direcc);
+        if (direcc == 1 && tablero[x-1][y] == 1 || direcc == 1 && tablero[x-1][y] == 2){
+            //return direcc;
             correct = true;
-        }else if(direcc == 2 && tablero[x][y+1] == 1){
+        }else if(direcc == 2 && tablero[x][y+1] == 1 || direcc == 2 && tablero[x][y+1] == 2){
+            //return direcc;
             correct = true;
-        }else if (direcc == 3 && tablero[x-1][y] == 1){
+        }else if (direcc == 3 && tablero[x+1][y] == 1 || direcc == 3 && tablero[x+1][y] == 2){
+            //return direcc;
             correct = true;
-        }else if(direcc == 4 && tablero[x][y-1] == 1){
-            correct == true;
+        }else if(direcc == 4 && tablero[x][y-1] == 1 || direcc == 4 && tablero[x][y-1] == 2){
+            //return direcc;
+            correct = true;
         }
     }
     return direcc;
 }
 
+function moverFicha(ficha){
+    
+    var correc = false;
+    var dir = ficha[2];
+    
+    while(correc != true){
+        var x = ficha[0];
+        var y = ficha[1];
+        
+        //alert("devuelve:" + dir);
+        if(dir == 1 && tablero[x-1][y] != 0){
+            //alert("dir 1");
+            ficha[0] = x-1;
+            ficha[1] = y;
+            ficha[2] = 1;
+            tablero[ficha[0]][ficha[1]] = 2;
+            tablero[x][y] = 1;
+            correc = true;
+        }else if(dir == 2 && tablero[x][y+1] != 0){
+            //alert("dir 2");
+            ficha[0] = x;
+            ficha[1] = y+1;
+            ficha[2] = 2;
+            tablero[ficha[0]][ficha[1]] = 2;
+            tablero[x][y] = 1;
+            correc = true;
+        }else if(dir == 3 && tablero[x+1][y] != 0){
+            //alert("dir 3");
+            ficha[0] = x+1;
+            ficha[1] = y;
+            ficha[2] = 3;
+            tablero[ficha[0]][ficha[1]] = 2;
+            tablero[x][y] = 1;
+            correc = true;
+        }else if(dir == 4 && tablero[x][y-1] != 0){
+            //alert("dir 4");
+            ficha[0] = x;
+            ficha[1] = y-1;
+            ficha[2] = 4
+            tablero[ficha[0]][ficha[1]] = 2;
+            tablero[x][y] = 1;
+            correc = true;
+        }
+        else{
+            //alert("ningun if.");
+            dir = dirRandom(ficha);
+        }
+    }
+}
+
+function moverJugador(ficha){
+    
+    var correc = false;
+    var dir = ficha[2];
+    
+    while(correc != true){
+        var x = ficha[0];
+        var y = ficha[1];
+        
+        //alert("devuelve:" + dir);
+        if(dir == 1 && tablero[x-1][y] != 0){
+            //alert("dir 1");
+            ficha[0] = x-1;
+            ficha[1] = y;
+            ficha[2] = 1;
+            tablero[ficha[0]][ficha[1]] = 3;
+            tablero[x][y] = 1;
+            correc = true;
+        }else if(dir == 2 && tablero[x][y+1] != 0){
+            //alert("dir 2");
+            ficha[0] = x;
+            ficha[1] = y+1;
+            ficha[2] = 2;
+            tablero[ficha[0]][ficha[1]] = 3;
+            tablero[x][y] = 1;
+            correc = true;
+        }else if(dir == 3 && tablero[x+1][y] != 0){
+            //alert("dir 3");
+            ficha[0] = x+1;
+            ficha[1] = y;
+            ficha[2] = 3;
+            tablero[ficha[0]][ficha[1]] = 3;
+            tablero[x][y] = 1;
+            correc = true;
+        }else if(dir == 4 && tablero[x][y-1] != 0){
+            //alert("dir 4");
+            ficha[0] = x;
+            ficha[1] = y-1;
+            ficha[2] = 4
+            tablero[ficha[0]][ficha[1]] = 3;
+            tablero[x][y] = 1;
+            correc = true;
+        }
+        else{
+            //alert("ningun if.");
+            dir = dirRandom(ficha);
+        }
+    }
+}
+
+
 function creaTabla(){
+    //document.body.innerHTML = '';    
+    var tabla ="";
     for(var i = 0; i < 30; i++){
         for(var k = 0; k < 30; k++){
             if (tablero[i][k] == 1){
-                document.write("&nbsp");
+                tabla += "&nbsp";
             }
             else if (tablero[i][k] == 2){
-                document.write("<span style='color:blue'>F</span>");
+                tabla += "<span style='color:blue'>F</span>";
             }
             else if (tablero[i][k] == 3){
-                document.write("<span style='color:red'>J</span>");
+                tabla += "<span style='color:red'>J</span>";
             }
             else{
-                document.write("O");
+                tabla += "O";
             }
         }
-        document.write("<br>");
+        tabla += "<br>";
     }
+    document.getElementById("tabla").innerHTML = tabla;
+    
+}
+
+function jugar(){
+    comprobarDir(fantasma1);
+    moverFicha(fantasma1);
+    comprobarDir(fantasma2);
+    moverFicha(fantasma2);
+    comprobarDir(fantasma3);
+    moverFicha(fantasma3);
+    moverJugador(jugador);     
+    choque(fantasma1,fantasma2,fantasma3,jugador);
+    creaTabla();
 }
 
 posFantasma(fantasma1);
@@ -129,4 +297,5 @@ posFantasma(fantasma3);
 
 posJugador(jugador);
 
-creaTabla();
+
+var m = setInterval(jugar, 350);

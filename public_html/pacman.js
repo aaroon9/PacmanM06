@@ -1,3 +1,4 @@
+
 //Declaramos el tablero que se mostrara para poder jugar
 var tablero = new Array(30);
         //X --> HACIA ABAJO  Y -> HACIA LA DERECHA
@@ -33,7 +34,7 @@ var tablero = new Array(30);
     tablero[29] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
 //Declaramos jugador con las diveresas possiciones (X,Y), direccion (1- arriba, 2- derecha, 3-abajo, 4-izquierda) y posible dirrecion introducida por pantalla.
-var jugador = new Array("x","y","direcc","sigDirecc");
+var jugador = new Array("x","y","direcc","0");
 //Declaramos les tres fantasmas con su posicion y direccion.
 var fantasma1 = new Array("x","y","direcc");
 var fantasma2 = new Array("x","y","direcc");
@@ -62,9 +63,29 @@ function comprobarDir(ficha){
     cont = 0;
 }
 
-
-
-
+function proxDir(jugador){
+    var x = jugador[0];
+    var y = jugador[1];
+    var proxDir = jugador[3];
+    
+    if(tablero[x-1][y] != 0 && proxDir == 1){
+        jugador[2] = proxDir;
+        jugador[3] = 0;
+    } 
+    if(tablero[x][y+1] != 0 && proxDir == 2){
+        jugador[2] = proxDir;
+        jugador[3] = 0;
+    }
+    if(tablero[x+1][y] != 0 && proxDir == 3){
+        jugador[2] = proxDir;
+        jugador[3] = 0;
+    }
+    if(tablero[x][y-1] != 0 && proxDir == 4){
+        jugador[2] = proxDir;
+        jugador[3] = 0;
+    }
+ 
+}
 
 function choque(fantasma1,fantasma2,fantasma3,jugador){
     
@@ -247,11 +268,25 @@ function moverJugador(ficha){
         }
         else{
             //alert("ningun if.");
-            dir = dirRandom(ficha);
+            correc =true;
         }
     }
 }
 
+function pulsarTecla(e) {                                
+//console.log(e.code);
+   if(e.code == "ArrowUp"){
+       jugador[3] = 1;
+    }else if(e.code == "ArrowRight"){
+       jugador[3] = 2;
+    }else if(e.code == "ArrowDown"){
+       jugador[3] = 3;
+    }else if(e.code == "ArrowLeft"){
+       jugador[3] = 4;
+   }
+   //alert(jugador[3]);
+//console.log(e.code);      //a la consola podeu veure l'objecte que té dos atributs on s'hi indica la tecla pitjada.                                       
+}   
 
 function creaTabla(){
     //document.body.innerHTML = '';    
@@ -284,6 +319,7 @@ function jugar(){
     moverFicha(fantasma2);
     comprobarDir(fantasma3);
     moverFicha(fantasma3);
+    proxDir(jugador)
     moverJugador(jugador);     
     choque(fantasma1,fantasma2,fantasma3,jugador);
     creaTabla();
